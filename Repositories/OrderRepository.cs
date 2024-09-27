@@ -1,5 +1,6 @@
 ﻿using BusinessObj.Models;
-using DataAccessObj.DAO;
+using DataAccessObj.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,36 +11,126 @@ namespace Repositories
 {
     public class OrderRepository
     {
-        private readonly OrderDAO _orderDAO;
+        private readonly GRACEFULLFLORISTContext _context;
 
-        public OrderRepository(OrderDAO orderDAO)
+        public OrderRepository(GRACEFULLFLORISTContext context)
         {
-            _orderDAO = orderDAO;
+            _context = context;
         }
 
         public async Task<List<Order>> GetAllAsync()
         {
-            return await _orderDAO.GetAllAsync();
+            return await _context.Orders.ToListAsync();
         }
 
         public async Task<Order> GetByIdAsync(string id)
         {
-            return await _orderDAO.GetByIdAsync(id);
+            return await _context.Orders.FindAsync(id);
         }
 
-        public async Task CreateAsync(Order order)
+        public async Task<string> CreateAsync(Order order)
         {
-            await _orderDAO.CreateAsync(order);
+            try
+            {
+                var add = new Order();
+              
+                add.OrderId = Guid.NewGuid().ToString("N").Substring(0, 10);
+                add.Status = order.Status;
+                add.User = order.User;
+                add.Address = order.Address;
+                add.UserId = order.UserId;
+                add.Address = order.Address;
+                add.Transactions = order.Transactions;
+                add.PromotionId = order.PromotionId;
+                add.Promotion = order.Promotion;
+                add.Total = order.Total;
+                add.FullName = order.FullName;
+                add.Phonenumber = order.Phonenumber;
+                add.IsPayed = order.IsPayed;
+                add.PaymentType = order.PaymentType;
+                add.Status = true;
+                add.LocationId = order.LocationId;
+
+                add.CreateBy = order.CreateBy;
+                add.CreateAt = DateTime.Now;
+
+                await this._context.Orders.AddAsync(add);
+                await this._context.SaveChangesAsync();
+                return "SUCCESS";
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
-        public async Task UpdateAsync(Order order)
+        public async Task<string> UpdateAsync(Order order)
         {
-            await _orderDAO.UpdateAsync(order);
+            try
+            {
+                var update = await this._context.Orders.Where(x => x.OrderId.Equals(order.OrderId))
+                                  .FirstOrDefaultAsync();
+                if (update != null)
+                {
+
+                    update.OrderId = update.OrderId ;
+                    update.Status = order.Status;
+                    update.User = order.User;
+                    update.Address = order.Address;
+                    update.UserId = order.UserId;
+                    update.Address = order.Address;
+                    update.Transactions = order.Transactions;
+                    update.PromotionId = order.PromotionId;
+                    update.Promotion = order.Promotion;
+                    update.Total = order.Total;
+                    update.FullName = order.FullName;
+                    update.Phonenumber = order.Phonenumber;
+                    update.IsPayed = order.IsPayed;
+                    update.PaymentType = order.PaymentType;
+                    update.Status = true;
+                    update.LocationId = order.LocationId;
+
+                    update.UpdateBy = order.UpdateBy;
+                    update.UpdateAt = DateTime.Now;
+                    this._context.Orders.Update(update);
+                    await this._context.SaveChangesAsync();
+                    return "SUCCESS";
+
+                }
+                return "FAIL";
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+
+            }
         }
 
-        public async Task DeleteAsync(string id)
+        public async Task<string> DeleteAsync(string id)
         {
-            await _orderDAO.DeleteAsync(id);
+            try
+            {
+                var delete = await this._context.Orders.Where(x => x.OrderId.Equals(id))
+                                 .FirstOrDefaultAsync();
+                if (delete != null)
+                {
+                    if (delete.Status == false)
+                    {
+                        throw new Exception("NotFound");
+                    }
+                    delete.Status = false;
+                    this._context.Orders.Update(delete);
+                    await _context.SaveChangesAsync();
+                    return "SUCCESS";
+                }
+                return "FAIL";
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }
