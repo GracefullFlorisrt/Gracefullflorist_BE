@@ -1,5 +1,6 @@
 ﻿using BusinessObj.Models;
-using DataAccessObj.DAO;
+using DataAccessObj.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,36 +11,93 @@ namespace Repositories
 {
     public class FeedbackRepository
     {
-        private readonly FeedbackDAO _feedbackDAO;
+        private readonly GRACEFULLFLORISTContext _context;
 
-        public FeedbackRepository(FeedbackDAO feedbackDAO)
+        public FeedbackRepository(GRACEFULLFLORISTContext context)
         {
-            _feedbackDAO = feedbackDAO;
+            _context = context;
         }
 
         public async Task<List<Feedback>> GetAllAsync()
         {
-            return await _feedbackDAO.GetAllAsync();
+            return await _context.Feedbacks.ToListAsync();
         }
 
         public async Task<Feedback> GetByIdAsync(string id)
         {
-            return await _feedbackDAO.GetByIdAsync(id);
+            return await _context.Feedbacks.FindAsync(id);
         }
 
-        public async Task CreateAsync(Feedback feedback)
+        public async Task<string> CreateAsync(Feedback feedback)
         {
-            await _feedbackDAO.CreateAsync(feedback);
+            try
+            {
+                var add = new Feedback();
+                add.FeedbackId = Guid.NewGuid().ToString("N").Substring(0, 10);
+                add.Status = true;
+                add.Description = feedback.Description;
+
+                await this._context.Feedbacks.AddAsync(add);
+                await this._context.SaveChangesAsync();
+                return "SUCCESS";
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
-        public async Task UpdateAsync(Feedback feedback)
+        public async Task<string> UpdateAsync(Feedback feedback)
         {
-            await _feedbackDAO.UpdateAsync(feedback);
+            try
+            {
+                var update = await this._context.Feedbacks.Where(x => x.FeedbackId.Equals(feedback.FeedbackId))
+                                  .FirstOrDefaultAsync();
+                if (update != null)
+                {
+
+                    update.Status = feedback.Status;
+                    update.Description = feedback.Description ?? update.Description;
+
+                    this._context.Feedbacks.Update(update);
+                    await this._context.SaveChangesAsync();
+                    return "SUCCESS";
+
+                }
+                return "FAIL";
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+
+            }
         }
 
-        public async Task DeleteAsync(string id)
+        public async Task<string> DeleteAsync(string id)
         {
-            await _feedbackDAO.DeleteAsync(id);
+            try
+            {
+                var delete = await this._context.Feedbacks.Where(x => x.FeedbackId.Equals(id))
+                                 .FirstOrDefaultAsync();
+                if (delete != null)
+                {
+                    if (delete.Status == false)
+                    {
+                        throw new Exception("NotFound");
+                    }
+                    delete.Status = false;
+                    this._context.Feedbacks.Update(delete);
+                    await _context.SaveChangesAsync();
+                    return "SUCCESS";
+                }
+                return "FAIL";
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }
