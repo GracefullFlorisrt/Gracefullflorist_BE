@@ -1,5 +1,6 @@
 ﻿using BusinessObj.Models;
-using DataAccessObj.Models;
+using DataAccessObj.DTO.UserDTO;
+using DataAccessObj;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -77,16 +78,15 @@ namespace Repositories
                     throw new Exception("Duplicate UserName please try another one.");
                 if (user != null && r != null)
                 {
-                    r.UserName = user.Username ?? r.UserName;
-                    r.FullName = user.fullName ?? r.FullName;
-                    r.Address = user.address ?? r.Address;
+                    r.Username = user.Username ?? r.Username;
+                    r.Fullname = user.Fullname ?? r.Fullname;
+                    r.Address = user.Address ?? r.Address;
                     r.Email = user.Email ?? r.Email;
-                    r.Gender = user.gender ?? r.Gender;
-                    r.PhoneNumber = user.Phone ?? r.PhoneNumber;
-                    r.RoleId = user.RoleID ?? r.RoleId;
-                    r.ImageUrl = user.imgURL ?? r.ImageUrl;
-                    r.DateOfBird = user.dateOfBird ?? r.DateOfBird;
-                    this._context.User.Update(r);
+                    r.Phonenumber = user.Phonenumber ?? r.Phonenumber;
+                    r.RoleId = user.RoleId;
+                    r.ImgUrl = user.ImgUrl ?? r.ImgUrl;
+                    r.Passwork = user.Passwork ?? r.Passwork;
+                    this._context.Users.Update(r);
                     await this._context.SaveChangesAsync();
                     return r;
                 }
@@ -98,12 +98,13 @@ namespace Repositories
             }
         }
 
-        public async Task<bool> Remove(RemoveDTO userID)
+        public async Task<bool> Remove(string userID)
         {
             if (userID != null)
             {
-                var obj = await this._context.User.Where(x => x.UserId.Equals(userID.UserID)).FirstOrDefaultAsync();
-                this._context.User.Remove(obj);
+                var obj = await this._context.Users.Where(x => x.UserId.Equals(userID)).FirstOrDefaultAsync();
+                obj.Status = false;
+                this._context.Users.Update(obj);
                 await this._context.SaveChangesAsync();
                 return true;
             }
@@ -125,7 +126,7 @@ namespace Repositories
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(30),
+                expires: DateTime.UtcNow.AddDays(1),
                 signingCredentials: creds
                 );
 
@@ -141,20 +142,22 @@ namespace Repositories
                 var r = new User();
                 if (request != null)
                 {
-                    foreach (var x in this._context.User)
+                    foreach (var x in this._context.Users)
                     {
-                        if (request.Username.Equals(x.UserName))
+                        if (request.Username.Equals(x.Username))
                         {
                             throw new Exception("Duplicate UserName");
                         }
                     }
                     r.UserId = "US" + Guid.NewGuid().ToString().Substring(0, 7);
-                    r.UserName = request.Username;
-                    r.PassWord = BCrypt.Net.BCrypt.HashPassword(request.Password);
+                    r.Username = request.Username;
+                    r.Passwork = BCrypt.Net.BCrypt.HashPassword(request.Password);
                     r.Email = request.Email;
-                    r.RoleId = "4";
+                    r.Address = request.Address ?? null;
+                    r.Phonenumber = request.Phonenumber ?? null;
+                    r.RoleId = 4;
                     r.Status = true;
-                    await this._context.User.AddAsync(r);
+                    await this._context.Users.AddAsync(r);
                     await this._context.SaveChangesAsync();
                     return r;
                 }
@@ -170,17 +173,16 @@ namespace Repositories
         {
             try
             {
-                var user = await this._context.User.Where(x => x.UserName.Equals(request.UserName))
+                var user = await this._context.Users.Where(x => x.Username.Equals(request.Username))
                                                    .Include(y => y.Role)
                                                    .FirstOrDefaultAsync();
                 if (user == null)
                     throw new Exception("USER IS NOT FOUND");
-                if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PassWord))
+                if (!BCrypt.Net.BCrypt.Verify(request.Password, user.Passwork))
                     throw new Exception("INVALID PASSWORD");
                 if (!user.Status)
                     throw new Exception("ACCOUNT WAS BANNED OR DELETED");
-                var token = CreateToken(user);
-                return token;
+                return CreateToken(user);
             }
             catch (Exception ex)
             {
@@ -192,19 +194,18 @@ namespace Repositories
         {
             try
             {
-                var userS = await this._context.User.Where(x => x.Equals(user.Username)).FirstOrDefaultAsync();
+                var userS = await this._context.Users.Where(x => x.Equals(user.Username)).FirstOrDefaultAsync();
                 if (userS != null)
                     throw new Exception("Duplicate Username Please try another onr.");
                 var create = new User();
                 create.UserId = "US" + Guid.NewGuid().ToString().Substring(0, 7);
                 create.RoleId = user.RoleId;
-                create.UserName = user.Username;
-                create.PassWord = BCrypt.Net.BCrypt.HashPassword(user.Password);
-                create.FullName = user.Fullname;
-                create.Gender = user.Gender;
-                create.DateOfBird = user.DateOfBirth;
-                create.Address = user.Address;
-                create.PhoneNumber = user.Phonenumber;
+                create.Username = user.Username;
+                create.Passwork = BCrypt.Net.BCrypt.HashPassword(user.Password);
+                create.Fullname = user.Fullname;
+                create.Address = user.Address ?? null;
+                create.Phonenumber = user.Phonenumber ?? null;
+                create.Email = user.Email;
                 create.Status = true;
                 await this._context.AddAsync(create);
                 await this._context.SaveChangesAsync();
@@ -219,7 +220,7 @@ namespace Repositories
         {
             try
             {
-                var list = await this._context.User.Where(x => x.RoleId.Equals("4")).ToListAsync();
+                var list = await this._context.Users.Where(x => x.RoleId.Equals("4")).ToListAsync();
                 return list.Count();
             }
             catch (Exception ex)

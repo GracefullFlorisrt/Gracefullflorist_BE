@@ -1,4 +1,4 @@
-﻿using DataAccessObj.Models;
+﻿using DataAccessObj;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
