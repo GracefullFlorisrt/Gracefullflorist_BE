@@ -1,10 +1,31 @@
-using DataAccessObj.Models;
-using Microsoft.EntityFrameworkCore;
-using Repositories;
-using Service.Interfaces;
-using Service.Services;
+using DataAccessObj;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
+using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add JWT authentication
+
+builder.Services.AddAuthentication(option =>
+{
+    option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(option =>
+{
+    option.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSetting:Key"])),
+    };
+});
 
 // Add services to the container.
 builder.Services.AddDbContext<GRACEFULLFLORISTContext>(options =>
@@ -13,21 +34,78 @@ builder.Services.AddDbContext<GRACEFULLFLORISTContext>(options =>
 builder.Services.AddScoped<AttributeRepository>();
 builder.Services.AddScoped<AttributeService>();
 
+builder.Services.AddDbContext<GRACEFULLFLORISTContext>(options => options.UseQueryTrackingBehavior(Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking));
+builder.Services.AddControllers().AddJsonOptions(
+    x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+builder.Services.AddControllersWithViews().AddNewtonsoftJson(
+    options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
+//Add Scope here
+builder.Services.AddScoped(typeof(GRACEFULLFLORISTContext));
+
+builder.Services.AddSwaggerGen(option =>
+{
+    /*
+    option.SwaggerDoc("BCSShop", new OpenApiInfo() { Title = "BCSShop", Version = "v1" });
+    //setup comment in swagger UI
+    var xmlCommentFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlCommentFileFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentFile);
+
+    option.IncludeXmlComments(xmlCommentFileFullPath);
+    */
+    //set up jwt token authorize
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+});
+
 
 var app = builder.Build();
 
+// Configure the HTTP request pipeline.
+/*
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/GRAEFULLFLORIST/swagger.json", "GracefullGloristAPI v1"));
+}
+*/
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(x => x.AllowAnyOrigin()
+                 .AllowAnyHeader()
+                 .AllowAnyMethod());
 
 app.UseHttpsRedirection();
 

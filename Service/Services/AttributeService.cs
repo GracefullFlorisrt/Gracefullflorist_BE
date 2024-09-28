@@ -18,7 +18,7 @@ namespace Service.Services
         }
         public async Task<string> AddAttribute(BusinessObj.Models.Attribute attribute)
         {
-            return await _repo.CreateAsync(attribute);
+            return await _repo.CreateAttribute(attribute);
         }
 
         public async Task<string> DeleteAttribute(string id)
@@ -30,7 +30,7 @@ namespace Service.Services
         {
             try
             {
-                return await _repo.GetAllAsync();
+                return await _repo.GetAllAttribute();
             }
             catch (Exception ex)
             {
@@ -40,12 +40,12 @@ namespace Service.Services
 
         public async Task<BusinessObj.Models.Attribute> GetAttributeByID(string id)
         {
-            return await _repo.GetByIdAsync(id);
+            return await _repo.GetAttributeById(id);
         }
 
         public async Task<string> UpdateAttribute(BusinessObj.Models.Attribute attribute)
         {
-            return await _repo.UpdateAsync(attribute);
+            return await _repo.UpdateAttribute(attribute);
         }
     }
 }
