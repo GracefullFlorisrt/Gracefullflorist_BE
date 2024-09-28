@@ -1,4 +1,4 @@
-using DataAccessObj.Models;
+using DataAccessObj;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -83,12 +83,13 @@ builder.Services.AddSwaggerGen(option =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+/*
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/GRAEFULLFLORIST/swagger.json", "GracefullGloristAPI v1"));
 }
-
+*/
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

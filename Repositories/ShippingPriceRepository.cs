@@ -1,6 +1,5 @@
 ﻿using BusinessObj.Models;
-using DataAccessObj.DAO;
-using DataAccessObj.Models;
+using DataAccessObj;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
