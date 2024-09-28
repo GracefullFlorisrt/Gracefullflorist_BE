@@ -18,17 +18,17 @@ namespace Repositories
             _context = context;
         }
 
-        public async Task<List<BusinessObj.Models.Attribute>> GetAllAsync()
+        public async Task<List<BusinessObj.Models.Attribute>> GetAllAttribute()
         {
             return await _context.Attributes.ToListAsync();
         }
 
-        public async Task<BusinessObj.Models.Attribute> GetByIdAsync(string id)
+        public async Task<BusinessObj.Models.Attribute> GetAttributeById(string id)
         {
             return await _context.Attributes.FindAsync(id);
         }
 
-        public async Task<string> CreateAsync(BusinessObj.Models.Attribute attribute)
+        public async Task<string> CreateAttribute(BusinessObj.Models.Attribute attribute)
         {
             try
             {
@@ -42,7 +42,7 @@ namespace Repositories
                     add.Desription = attribute.Desription;
                     add.Type = attribute.Type;
                     add.ImgUrl = attribute.ImgUrl;
-
+                    
                     add.CreateBy = attribute.CreateBy;
                     add.CreateAt = DateTime.Now;
                     await this._context.Attributes.AddAsync(add);
@@ -55,7 +55,7 @@ namespace Repositories
             }
         }
 
-        public async Task<string> UpdateAsync(BusinessObj.Models.Attribute attribute)
+        public async Task<string> UpdateAttribute(BusinessObj.Models.Attribute attribute)
         {
             try
             {
