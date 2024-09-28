@@ -54,7 +54,6 @@ public partial class GRACEFULLFLORISTContext : DbContext
         optionsBuilder.UseSqlServer(config.GetConnectionString("ConnectionStrings:DefaultConnectionString"));
         optionsBuilder.EnableSensitiveDataLogging();
     }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Order>(entity =>
