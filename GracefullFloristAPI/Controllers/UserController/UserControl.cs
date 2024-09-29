@@ -110,8 +110,7 @@ namespace GracefullFloristAPI.Controllers.UserController
                 return BadRequest(ex.Message);
             }
         }
-
-        [Authorize(Roles = "1")]
+        [AllowAnonymous]
         [Route("Regis")]
         [HttpPost]
         public async Task<IActionResult> Registration(RegisterDTO request)
