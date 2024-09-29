@@ -1,5 +1,6 @@
 using DataAccessObj;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Service.Interfaces;
@@ -33,9 +34,6 @@ builder.Services.AddAuthentication(option =>
 builder.Services.AddDbContext<GRACEFULLFLORISTContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<AttributeRepository>();
-builder.Services.AddScoped<AttributeService>();
-
 builder.Services.AddDbContext<GRACEFULLFLORISTContext>(options => options.UseQueryTrackingBehavior(Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking));
 builder.Services.AddControllers().AddJsonOptions(
     x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
@@ -50,6 +48,7 @@ builder.Services.AddSwaggerGen();
 //Add Scope here
 builder.Services.AddScoped(typeof(GRACEFULLFLORISTContext));
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAttributeService, AttributeService>();
 builder.Services.AddSwaggerGen(option =>
 {
     /*
