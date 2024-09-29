@@ -1,4 +1,5 @@
 ﻿using BusinessObj.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Interfaces;
 using Service.Services;
@@ -10,6 +11,7 @@ namespace YourNamespace.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AttributesController : ControllerBase
     {
         private readonly AttributeService _service;
@@ -19,6 +21,8 @@ namespace YourNamespace.Controllers
             _service = service;
         }
 
+        [Authorize(Roles = "1")]
+        [Route("All")]
         [HttpGet]
         public async Task<IActionResult> GetAllAttributes()
         {
@@ -33,8 +37,9 @@ namespace YourNamespace.Controllers
             }
         }
 
-        
-        [HttpGet("{id}")]
+        [Authorize(Roles = "1")]
+        [Route("ID")]
+        [HttpGet]
         public async Task<IActionResult> GetAttributeById(string id)
         {
             var attribute = await _service.GetAttributeByID(id);
@@ -45,7 +50,8 @@ namespace YourNamespace.Controllers
             return Ok(attribute); 
         }
 
-        
+        [Authorize(Roles = "2,3")]
+        [Route("Add")]
         [HttpPost]
         public async Task<IActionResult> AddAttribute([FromBody] BusinessObj.Models.Attribute attribute)
         {
@@ -64,8 +70,9 @@ namespace YourNamespace.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
-        [HttpPut("{id}")]
+        [Authorize(Roles = "2,3")]
+        [Route("Update")]
+        [HttpPut]
         public async Task<IActionResult> UpdateAttribute(string id, [FromBody] BusinessObj.Models.Attribute attribute)
         {
             if (attribute == null || attribute.AttributeId != id)
@@ -83,8 +90,9 @@ namespace YourNamespace.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
-        [HttpDelete("{id}")]
+        [Authorize(Roles = "2,3")]
+        [Route("Delete")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteAttribute(string id)
         {
             try

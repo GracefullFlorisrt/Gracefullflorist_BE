@@ -32,21 +32,38 @@ namespace Repositories
         {
             try
             {
-                var add = new Feedback();
-                add.FeedbackId = Guid.NewGuid().ToString("N").Substring(0, 10);
-                add.Status = true;
-                add.Description = feedback.Description;
+                var newFeedback = new Feedback();
 
-                await this._context.Feedbacks.AddAsync(add);
-                await this._context.SaveChangesAsync();
+                newFeedback.FeedbackId = Guid.NewGuid().ToString("N").Substring(0, 10);
+                newFeedback.Status = true;
+                newFeedback.Description = feedback.Description;
+
+                if (feedback.Point == null)
+                {
+                    if (feedback.ReplyId != null)
+                    {
+                        newFeedback.ReplyId = feedback.ReplyId; 
+                    }
+                    else
+                    {
+                        return "ERROR: ReplyId is required for a reply.";
+                    }
+                }
+                else
+                {
+                    newFeedback.Point = feedback.Point;
+                    newFeedback.ReplyId = null; 
+                }
+                await _context.Feedbacks.AddAsync(newFeedback);
+                await _context.SaveChangesAsync();
                 return "SUCCESS";
-
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
         }
+
 
         public async Task<string> UpdateAsync(Feedback feedback)
         {

@@ -1,4 +1,5 @@
 ﻿using BusinessObj.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Interfaces;
 using Service.Services;
@@ -10,6 +11,7 @@ namespace YourNamespace.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class EntertainController : ControllerBase
     {
         private readonly EntertainService _service;
@@ -18,7 +20,8 @@ namespace YourNamespace.Controllers
         {
             _service = service;
         }
-
+        [Authorize(Roles = "1")]
+        [Route("All")]
         [HttpGet]
         public async Task<IActionResult> GetAllEntertain()
         {
@@ -34,7 +37,9 @@ namespace YourNamespace.Controllers
         }
 
 
-        [HttpGet("{id}")]
+        [Authorize(Roles = "1")]
+        [Route("ID")]
+        [HttpGet]
         public async Task<IActionResult> GetEntertainById(string id)
         {
             var Entertain = await _service.GetEntertainByID(id);
@@ -46,6 +51,8 @@ namespace YourNamespace.Controllers
         }
 
 
+        [Authorize(Roles = "2,3")]
+        [Route("Add")]
         [HttpPost]
         public async Task<IActionResult> AddEntertain([FromBody] Entertain Entertain)
         {
@@ -65,7 +72,9 @@ namespace YourNamespace.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [Authorize(Roles = "2,3")]
+        [Route("Update")]
+        [HttpPut]
         public async Task<IActionResult> UpdateEntertain(string id, [FromBody] Entertain Entertain)
         {
             if (Entertain == null || Entertain.EnId != id)
@@ -84,7 +93,9 @@ namespace YourNamespace.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [Authorize(Roles = "2,3")]
+        [Route("Delete")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteEntertain(string id)
         {
             try

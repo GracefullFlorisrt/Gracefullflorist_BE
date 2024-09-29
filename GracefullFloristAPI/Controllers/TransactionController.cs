@@ -1,4 +1,5 @@
 ﻿using BusinessObj.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Interfaces;
 using Service.Services;
@@ -10,6 +11,7 @@ namespace YourNamespace.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TransactionController : ControllerBase
     {
         private readonly TransactionService _service;
@@ -19,6 +21,8 @@ namespace YourNamespace.Controllers
             _service = service;
         }
 
+        [Authorize(Roles = "1")]
+        [Route("All")]
         [HttpGet]
         public async Task<IActionResult> GetAllTransaction()
         {
@@ -34,7 +38,9 @@ namespace YourNamespace.Controllers
         }
 
 
-        [HttpGet("{id}")]
+        [Authorize(Roles = "1")]
+        [Route("ID")]
+        [HttpGet]
         public async Task<IActionResult> GetTransactionById(string Transactionid)
         {
             var Transaction = await _service.GetTransactionByID(Transactionid);
@@ -46,6 +52,8 @@ namespace YourNamespace.Controllers
         }
 
 
+        [Authorize(Roles = "2,3")]
+        [Route("Add")]
         [HttpPost]
         public async Task<IActionResult> AddTransaction([FromBody] Transaction Transaction)
         {
@@ -65,7 +73,9 @@ namespace YourNamespace.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [Authorize(Roles = "2,3")]
+        [Route("Update")]
+        [HttpPut]
         public async Task<IActionResult> UpdateTransaction(string Transactionid, [FromBody] Transaction Transaction)
         {
             if (Transaction == null || Transaction.TransactionId != Transactionid)
@@ -84,7 +94,9 @@ namespace YourNamespace.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [Authorize(Roles = "2,3")]
+        [Route("Delete")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteTransaction(string Transactionid)
         {
             try

@@ -64,6 +64,7 @@ builder.Services.AddSwaggerGen(option =>
     option.IncludeXmlComments(xmlCommentFileFullPath);
     */
     //set up jwt token authorize
+
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -98,7 +99,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/GRAEFULLFLORIST/swagger.json", "GracefullGloristAPI v1"));
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/GRACEFULLFLORIST/swagger.json", "GracefullFloristAPI v1"));
 }
 
 // Configure the HTTP request pipeline.
