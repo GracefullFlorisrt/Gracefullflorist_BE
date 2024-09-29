@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Repositories;
 using Service.Interfaces;
 using Service.Services;
 using System.Reflection;
@@ -46,6 +47,7 @@ builder.Services.AddSwaggerGen();
 
 
 //Add Scope here
+builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped(typeof(GRACEFULLFLORISTContext));
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAttributeService, AttributeService>();
@@ -98,12 +100,15 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 }
 
 // Configure the HTTP request pipeline.
+
+*/
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-*/
+
 app.UseCors(x => x.AllowAnyOrigin()
                  .AllowAnyHeader()
                  .AllowAnyMethod());
