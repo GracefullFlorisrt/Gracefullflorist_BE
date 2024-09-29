@@ -1,4 +1,5 @@
 ﻿using BusinessObj.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Interfaces;
 using Service.Services;
@@ -10,6 +11,7 @@ namespace YourNamespace.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class FeedbackController : ControllerBase
     {
         private readonly FeedbackService _service;
@@ -19,6 +21,8 @@ namespace YourNamespace.Controllers
             _service = service;
         }
 
+        [Authorize(Roles = "1")]
+        [Route("All")]
         [HttpGet]
         public async Task<IActionResult> GetAllFeedback()
         {
@@ -34,7 +38,9 @@ namespace YourNamespace.Controllers
         }
 
 
-        [HttpGet("{id}")]
+        [Authorize(Roles = "1")]
+        [Route("ID")]
+        [HttpGet]
         public async Task<IActionResult> GetFeedbackById(string id)
         {
             var Feedback = await _service.GetFeedbackByID(id);
@@ -46,6 +52,9 @@ namespace YourNamespace.Controllers
         }
 
 
+
+        [Authorize(Roles = "1")]
+        [Route("Add")]
         [HttpPost]
         public async Task<IActionResult> AddFeedback([FromBody] Feedback Feedback)
         {
@@ -65,7 +74,9 @@ namespace YourNamespace.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [Authorize(Roles = "1")]
+        [Route("Update")]
+        [HttpPut]
         public async Task<IActionResult> UpdateFeedback(string id, [FromBody] Feedback Feedback)
         {
             if (Feedback == null || Feedback.FeedbackId != id)
@@ -84,7 +95,9 @@ namespace YourNamespace.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [Authorize(Roles = "1")]
+        [Route("Delete")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteFeedback(string id)
         {
             try

@@ -1,4 +1,5 @@
 ﻿using BusinessObj.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Interfaces;
 using Service.Services;
@@ -10,6 +11,7 @@ namespace YourNamespace.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ShippingPriceController : ControllerBase
     {
         private readonly ShippingPriceService _service;
@@ -19,6 +21,8 @@ namespace YourNamespace.Controllers
             _service = service;
         }
 
+        [Authorize(Roles = "1")]
+        [Route("All")]
         [HttpGet]
         public async Task<IActionResult> GetAllShippingPrice()
         {
@@ -34,7 +38,9 @@ namespace YourNamespace.Controllers
         }
 
 
-        [HttpGet("{id}")]
+        [Authorize(Roles = "1")]
+        [Route("ID")]
+        [HttpGet]
         public async Task<IActionResult> GetShippingPriceById(int ShippingPriceid)
         {
             var ShippingPrice = await _service.GetShippingPriceByID(ShippingPriceid);
@@ -46,6 +52,8 @@ namespace YourNamespace.Controllers
         }
 
 
+        [Authorize(Roles = "2,3")]
+        [Route("Add")]
         [HttpPost]
         public async Task<IActionResult> AddShippingPrice([FromBody] ShippingPrice ShippingPrice)
         {
@@ -65,7 +73,9 @@ namespace YourNamespace.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [Authorize(Roles = "2,3")]
+        [Route("Update")]
+        [HttpPut]
         public async Task<IActionResult> UpdateShippingPrice(int ShippingPriceid, [FromBody] ShippingPrice ShippingPrice)
         {
             if (ShippingPrice == null || ShippingPrice.ShippingId != ShippingPriceid)
@@ -84,7 +94,9 @@ namespace YourNamespace.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [Authorize(Roles = "2,3")]
+        [Route("Delete")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteShippingPrice(int ShippingPriceid)
         {
             try

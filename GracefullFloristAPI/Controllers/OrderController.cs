@@ -1,4 +1,5 @@
 ﻿using BusinessObj.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Interfaces;
 using Service.Services;
@@ -10,6 +11,7 @@ namespace YourNamespace.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class OrderController : ControllerBase
     {
         private readonly OrderService _service;
@@ -19,6 +21,8 @@ namespace YourNamespace.Controllers
             _service = service;
         }
 
+        [Authorize(Roles = "1")]
+        [Route("All")]
         [HttpGet]
         public async Task<IActionResult> GetAllOrder()
         {
@@ -34,7 +38,9 @@ namespace YourNamespace.Controllers
         }
 
 
-        [HttpGet("{id}")]
+        [Authorize(Roles = "1")]
+        [Route("ID")]
+        [HttpGet]
         public async Task<IActionResult> GetOrderById(string orderid)
         {
             var Order = await _service.GetOrderByID(orderid);
@@ -46,6 +52,8 @@ namespace YourNamespace.Controllers
         }
 
 
+        [Authorize(Roles = "1")]
+        [Route("Add")]
         [HttpPost]
         public async Task<IActionResult> AddOrder([FromBody] Order Order)
         {
@@ -65,7 +73,9 @@ namespace YourNamespace.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [Authorize(Roles = "1")]
+        [Route("Update")]
+        [HttpPut]
         public async Task<IActionResult> UpdateOrder(string orderid, [FromBody] Order Order)
         {
             if (Order == null || Order.OrderId != orderid )
@@ -84,7 +94,9 @@ namespace YourNamespace.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [Authorize(Roles = "1")]
+        [Route("Delete")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteOrder(string orderid)
         {
             try

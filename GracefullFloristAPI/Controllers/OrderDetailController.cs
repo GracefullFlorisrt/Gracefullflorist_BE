@@ -1,4 +1,5 @@
 ﻿using BusinessObj.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Interfaces;
 using Service.Services;
@@ -10,6 +11,7 @@ namespace YourNamespace.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class OrderDetailController : ControllerBase
     {
         private readonly OrderDetailService _service;
@@ -19,6 +21,8 @@ namespace YourNamespace.Controllers
             _service = service;
         }
 
+        [Authorize(Roles = "2,3")]
+        [Route("All")]
         [HttpGet]
         public async Task<IActionResult> GetAllOrderDetail()
         {
@@ -34,7 +38,9 @@ namespace YourNamespace.Controllers
         }
 
 
-        [HttpGet("{id}")]
+        [Authorize(Roles = "1")]
+        [Route("ID")]
+        [HttpGet]
         public async Task<IActionResult> GetOrderDetailById(string orderid, string productid)
         {
             var OrderDetail = await _service.GetOrderDetailByID(orderid, productid);
@@ -46,6 +52,8 @@ namespace YourNamespace.Controllers
         }
 
 
+        [Authorize(Roles = "1")]
+        [Route("Add")]
         [HttpPost]
         public async Task<IActionResult> AddOrderDetail([FromBody] OrderDetail OrderDetail)
         {
@@ -65,7 +73,9 @@ namespace YourNamespace.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [Authorize(Roles = "1")]
+        [Route("Update")]
+        [HttpPut]
         public async Task<IActionResult> UpdateOrderDetail(string orderid, string productid, [FromBody] OrderDetail OrderDetail)
         {
             if (OrderDetail == null || OrderDetail.OrderId != orderid || OrderDetail.ProductId != productid)
@@ -84,7 +94,9 @@ namespace YourNamespace.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [Authorize(Roles = "1")]
+        [Route("Delete")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteOrderDetail(string orderid, string productid)
         {
             try
