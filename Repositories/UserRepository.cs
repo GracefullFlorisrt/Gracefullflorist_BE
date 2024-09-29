@@ -23,6 +23,7 @@ namespace Repositories
             _configuration = configuration;
             _context = context;
         }
+        public UserRepository() { }
         public async Task<List<User>> GetAll()
         {
             try

@@ -2,6 +2,8 @@ using DataAccessObj;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Service.Interfaces;
+using Service.Services;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -23,7 +25,7 @@ builder.Services.AddAuthentication(option =>
         ValidateAudience = true,
         ValidAudience = builder.Configuration["Jwt:Audience"],
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSetting:Key"])),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
     };
 });
 
@@ -47,11 +49,11 @@ builder.Services.AddSwaggerGen();
 
 //Add Scope here
 builder.Services.AddScoped(typeof(GRACEFULLFLORISTContext));
-
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSwaggerGen(option =>
 {
     /*
-    option.SwaggerDoc("BCSShop", new OpenApiInfo() { Title = "BCSShop", Version = "v1" });
+    option.SwaggerDoc("GracefullFlorist", new OpenApiInfo() { Title = "GracefullFlorist", Version = "v1" });
     //setup comment in swagger UI
     var xmlCommentFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlCommentFileFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentFile);
@@ -95,14 +97,14 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/GRAEFULLFLORIST/swagger.json", "GracefullGloristAPI v1"));
 }
-*/
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+*/
 app.UseCors(x => x.AllowAnyOrigin()
                  .AllowAnyHeader()
                  .AllowAnyMethod());
