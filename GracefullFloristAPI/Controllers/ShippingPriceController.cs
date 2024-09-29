@@ -21,7 +21,7 @@ namespace YourNamespace.Controllers
             _service = service;
         }
 
-        [Authorize(Roles = "1")]
+        [AllowAnonymous]
         [Route("All")]
         [HttpGet]
         public async Task<IActionResult> GetAllShippingPrice()
@@ -38,7 +38,7 @@ namespace YourNamespace.Controllers
         }
 
 
-        [Authorize(Roles = "1")]
+        [AllowAnonymous]
         [Route("ID")]
         [HttpGet]
         public async Task<IActionResult> GetShippingPriceById(int ShippingPriceid)

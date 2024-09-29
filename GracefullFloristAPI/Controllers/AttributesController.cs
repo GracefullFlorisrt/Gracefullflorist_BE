@@ -21,7 +21,7 @@ namespace YourNamespace.Controllers
             _service = service;
         }
 
-        [Authorize(Roles = "1")]
+        [AllowAnonymous]
         [Route("All")]
         [HttpGet]
         public async Task<IActionResult> GetAllAttributes()
@@ -37,7 +37,7 @@ namespace YourNamespace.Controllers
             }
         }
 
-        [Authorize(Roles = "1")]
+        [AllowAnonymous]
         [Route("ID")]
         [HttpGet]
         public async Task<IActionResult> GetAttributeById(string id)
@@ -50,7 +50,7 @@ namespace YourNamespace.Controllers
             return Ok(attribute); 
         }
 
-        [Authorize(Roles = "2,3")]
+        [AllowAnonymous]
         [Route("Add")]
         [HttpPost]
         public async Task<IActionResult> AddAttribute([FromBody] BusinessObj.Models.Attribute attribute)

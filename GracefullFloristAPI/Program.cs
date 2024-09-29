@@ -48,9 +48,12 @@ builder.Services.AddSwaggerGen();
 
 //Add Scope here
 builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<AttributeRepository>();
 builder.Services.AddScoped(typeof(GRACEFULLFLORISTContext));
+builder.Services.AddScoped<ShippingPriceRepository>();
+builder.Services.AddScoped<ShippingPriceService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IAttributeService, AttributeService>();
+builder.Services.AddScoped<AttributeService>();
 builder.Services.AddSwaggerGen(option =>
 {
     /*
