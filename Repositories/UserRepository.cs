@@ -140,8 +140,8 @@ namespace Repositories
                 var r = new User();
                 if (request != null)
                 {
-                    
-                        if ( (this._context.Users.Where(x => x.Username.Equals(request.Username))) != null)
+                    var test = await this._context.Users.Where(x => x.Username.Equals(request.Username)).FirstOrDefaultAsync();
+                        if ( test != null)
                         {
                             throw new Exception("Duplicate UserName");
                         }
