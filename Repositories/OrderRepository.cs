@@ -1,5 +1,6 @@
 ﻿using BusinessObj.Models;
 using DataAccessObj;
+using DataAccessObj.DTO.OrderDTO;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -48,7 +49,7 @@ namespace Repositories
                 add.Phonenumber = order.Phonenumber;
                 add.IsPayed = order.IsPayed;
                 add.PaymentType = order.PaymentType;
-                add.Status = true;
+                add.Status = 0;
                 add.LocationId = order.LocationId;
 
                 add.CreateBy = order.CreateBy;
@@ -88,7 +89,7 @@ namespace Repositories
                     update.Phonenumber = order.Phonenumber;
                     update.IsPayed = order.IsPayed;
                     update.PaymentType = order.PaymentType;
-                    update.Status = true;
+                    update.Status = 0;
                     update.LocationId = order.LocationId;
 
                     update.UpdateBy = order.UpdateBy;
@@ -108,19 +109,16 @@ namespace Repositories
             }
         }
 
-        public async Task<string> DeleteAsync(string id)
+        public async Task<string> DeleteAsync(DeleteOrderDTO request)
         {
             try
             {
-                var delete = await this._context.Orders.Where(x => x.OrderId.Equals(id))
+                var delete = await this._context.Orders.Where(x => x.OrderId.Equals(request.Id))
                                  .FirstOrDefaultAsync();
                 if (delete != null)
                 {
-                    if (delete.Status == false)
-                    {
-                        throw new Exception("NotFound");
-                    }
-                    delete.Status = false;
+                    delete.DeleteAt = DateTime.UtcNow;
+                    delete.DeleteBy = request.UserID;
                     this._context.Orders.Update(delete);
                     await _context.SaveChangesAsync();
                     return "SUCCESS";

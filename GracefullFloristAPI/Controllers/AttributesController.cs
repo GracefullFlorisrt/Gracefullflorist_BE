@@ -1,4 +1,5 @@
 ﻿using BusinessObj.Models;
+using DataAccessObj.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Interfaces;
@@ -7,37 +8,36 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace YourNamespace.Controllers
+namespace GracefullFloristAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class AttributesController : ControllerBase
     {
-        private readonly AttributeService _service;
+        private readonly IAttributeService _service;
 
-        public AttributesController(AttributeService service)
+        public AttributesController(IAttributeService service)
         {
             _service = service;
         }
 
-        [AllowAnonymous]
         [Route("All")]
         [HttpGet]
         public async Task<IActionResult> GetAllAttributes()
         {
+            ResponseType<List<BusinessObj.Models.Attribute>> response = new ResponseType<List<BusinessObj.Models.Attribute>>();
             try
             {
-                var attributes = await _service.GetAllAttribute();
-                return Ok(attributes); 
+                response.Data = await this._service.GetAllAttribute();
+                return Ok(response); 
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                response.message = ex.Message;
+                return BadRequest(response);
             }
         }
 
-        [AllowAnonymous]
         [Route("ID")]
         [HttpGet]
         public async Task<IActionResult> GetAttributeById(string id)
@@ -50,7 +50,6 @@ namespace YourNamespace.Controllers
             return Ok(attribute); 
         }
 
-        [AllowAnonymous]
         [Route("Add")]
         [HttpPost]
         public async Task<IActionResult> AddAttribute([FromBody] BusinessObj.Models.Attribute attribute)
@@ -70,7 +69,6 @@ namespace YourNamespace.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        [Authorize(Roles = "2,3")]
         [Route("Update")]
         [HttpPut]
         public async Task<IActionResult> UpdateAttribute(string id, [FromBody] BusinessObj.Models.Attribute attribute)
@@ -90,7 +88,6 @@ namespace YourNamespace.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        [Authorize(Roles = "2,3")]
         [Route("Delete")]
         [HttpDelete]
         public async Task<IActionResult> DeleteAttribute(string id)

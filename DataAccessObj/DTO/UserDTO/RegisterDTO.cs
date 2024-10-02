@@ -13,5 +13,6 @@ namespace DataAccessObj.DTO.UserDTO
         public string Username {  get; set; }
         public string Address {  get; set; }
         public string Phonenumber {  get; set; }
+        public string Fullname { get; set; }
     }
 }

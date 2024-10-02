@@ -7,16 +7,16 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace YourNamespace.Controllers
+namespace GracefullFloristAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
     public class FeedbackController : ControllerBase
     {
-        private readonly FeedbackService _service;
+        private readonly IFeedbackService _service;
 
-        public FeedbackController(FeedbackService service)
+        public FeedbackController(IFeedbackService service)
         {
             _service = service;
         }

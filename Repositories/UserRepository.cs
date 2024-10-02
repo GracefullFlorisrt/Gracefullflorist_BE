@@ -45,7 +45,8 @@ namespace Repositories
             try
             {
                 var search = await this._context.Users.Where(x => x.UserId.Equals(user))
-                                                     .FirstOrDefaultAsync();
+                                                        .Include(x => x.Role)       
+                                                            .FirstOrDefaultAsync();
                 return search;
             }
             catch (Exception ex)
@@ -58,7 +59,7 @@ namespace Repositories
         {
             try
             {
-                var list = await this._context.Users.Where(x => x.Fullname.Contains(FullName)).ToListAsync();
+                var list = await this._context.Users.Where(x => x.Fullname.Contains(FullName)).Include(x => x.Role).ToListAsync();
                 if (list != null) return list;
                 throw new Exception("Not Found");
             }
@@ -68,25 +69,21 @@ namespace Repositories
             }
         }
 
-        public async Task<User> Update(User user)
+        public async Task<User> Update(UpdateUser user)
         {
             try
             {
-                var r = await this._context.Users.Where(x => user.UserId.Equals(x.UserId))
+                var r = await this._context.Users.Where(x => user.UserID.Equals(x.UserId))
                                                 .FirstOrDefaultAsync();
-                var userS = await this._context.Users.Where(x => x.Equals(user.Username)).FirstOrDefaultAsync();
-                if (userS != null)
-                    throw new Exception("Duplicate UserName please try another one.");
                 if (user != null && r != null)
                 {
-                    r.Username = user.Username ?? r.Username;
                     r.Fullname = user.Fullname ?? r.Fullname;
                     r.Address = user.Address ?? r.Address;
                     r.Email = user.Email ?? r.Email;
                     r.Phonenumber = user.Phonenumber ?? r.Phonenumber;
                     r.RoleId = user.RoleId;
-                    r.ImgUrl = user.ImgUrl ?? r.ImgUrl;
-                    r.Passwork = user.Passwork ?? r.Passwork;
+                    r.ImgUrl = user.Img_url ?? r.ImgUrl;
+                    r.Passwork = user.Password ?? r.Passwork;
                     this._context.Users.Update(r);
                     await this._context.SaveChangesAsync();
                     return r;
@@ -143,20 +140,21 @@ namespace Repositories
                 var r = new User();
                 if (request != null)
                 {
-                    foreach (var x in this._context.Users)
-                    {
-                        if (request.Username.Equals(x.Username))
+                    
+                        if ( (this._context.Users.Where(x => x.Username.Equals(request.Username))) != null)
                         {
                             throw new Exception("Duplicate UserName");
                         }
-                    }
-                    r.UserId = "US" + Guid.NewGuid().ToString().Substring(0, 7);
+                    
+                    r.UserId = "US" + Guid.NewGuid().ToString().Substring(0, 10);
                     r.Username = request.Username;
+                    r.Fullname = request.Fullname;
                     r.Passwork = BCrypt.Net.BCrypt.HashPassword(request.Password);
                     r.Email = request.Email;
                     r.Address = request.Address ?? null;
+                    r.CreateDate = DateTime.UtcNow;
                     r.Phonenumber = request.Phonenumber ?? null;
-                    r.RoleId = 4;
+                    r.RoleId = 1;
                     r.Status = true;
                     await this._context.Users.AddAsync(r);
                     await this._context.SaveChangesAsync();
@@ -208,7 +206,8 @@ namespace Repositories
                 create.Phonenumber = user.Phonenumber ?? null;
                 create.Email = user.Email;
                 create.Status = true;
-                await this._context.AddAsync(create);
+                create.CreateDate = DateTime.UtcNow;
+                await this._context.Users.AddAsync(create);
                 await this._context.SaveChangesAsync();
                 return create;
             }
@@ -221,7 +220,7 @@ namespace Repositories
         {
             try
             {
-                var list = await this._context.Users.Where(x => x.RoleId.Equals("4")).ToListAsync();
+                var list = await this._context.Users.Where(x => x.RoleId.Equals(1)).ToListAsync();
                 return list.Count();
             }
             catch (Exception ex)

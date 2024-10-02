@@ -1,4 +1,5 @@
 ﻿using BusinessObj.Models;
+using DataAccessObj.DTO.OrderDTO;
 using Repositories;
 using Service.Interfaces;
 using System;
@@ -23,9 +24,9 @@ namespace Service.Services
             return await _repo.CreateAsync(order);
         }
 
-        public async Task<string> DeleteOrder(string id)
+        public async Task<string> DeleteOrder(DeleteOrderDTO request)
         {
-            return await _repo.DeleteAsync(id);
+            return await _repo.DeleteAsync(request);
         }
 
         public async Task<List<Order>> GetAllOrder()

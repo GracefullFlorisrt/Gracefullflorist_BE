@@ -1,4 +1,5 @@
 ﻿using BusinessObj.Models;
+using DataAccessObj.DTO.ProductDTO;
 using Repositories;
 using Service.Interfaces;
 using System;
@@ -15,39 +16,30 @@ namespace Service.Services
 
         public ProductService(ProductRepository repo)
         {
-            _repo = repo;
+            this._repo = repo;
         }
 
-        public async Task<string> AddProduct(Product product)
-        {
-            return await _repo.CreateAsync(product);
-        }
+        public async Task<string> AddProduct(CreateProductDTO product)
+            => await this._repo.Create(product);
+        
 
-        public async Task<string> DeleteProduct(string id)
-        {
-            return await _repo.DeleteAsync(id);
-        }
+        public async Task<string> DeleteProduct(DeleteProductDTO request)
+            => await this._repo.Delete(request);
+
 
         public async Task<List<Product>> GetAllProduct()
-        {
-            try
-            {
-                return await _repo.GetAllAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"An error occurred while fetching all attributes: {ex.Message}", ex);
-            }
-        }
+            => await this._repo.GetAll();
+
+        public async Task<List<Product>> GetCustomize(string UserID)
+            => await this._repo.GetCustomize(UserID);
+             
 
         public async Task<Product> GetProductByID(string id)
-        {
-            return await _repo.GetByIdAsync(id);
-        }
+            => await this._repo.GetById(id);
+        
 
-        public async Task<string> UpdateProduct(Product product)
-        {
-            return await _repo.UpdateAsync(product);
-        }
+        public async Task<string> UpdateProduct(UpdateProductDTO request)
+            => await this._repo.Update(request);
+        
     }
 }

@@ -19,6 +19,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[Blogs]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Entertain]",
          "ObjectType": 0
       },
@@ -40,6 +44,10 @@
       },
       {
          "Name": "[dbo].[Promotion]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[RefBogsFeedback]",
          "ObjectType": 0
       },
       {

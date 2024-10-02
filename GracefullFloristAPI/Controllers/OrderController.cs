@@ -1,4 +1,5 @@
 ﻿using BusinessObj.Models;
+using DataAccessObj.DTO.OrderDTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Interfaces;
@@ -7,16 +8,16 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace YourNamespace.Controllers
+namespace GracefullFloristAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
     public class OrderController : ControllerBase
     {
-        private readonly OrderService _service;
+        private readonly IOrderService _service;
 
-        public OrderController(OrderService service)
+        public OrderController(IOrderService service)
         {
             _service = service;
         }
@@ -97,11 +98,11 @@ namespace YourNamespace.Controllers
         [Authorize(Roles = "1")]
         [Route("Delete")]
         [HttpDelete]
-        public async Task<IActionResult> DeleteOrder(string orderid)
+        public async Task<IActionResult> DeleteOrder(DeleteOrderDTO request)
         {
             try
             {
-                await _service.DeleteOrder(orderid);
+                await _service.DeleteOrder(request);
                 return Ok("Order deleted successfully");
             }
             catch (Exception ex)

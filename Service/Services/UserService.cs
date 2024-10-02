@@ -43,7 +43,7 @@ namespace Service.Services
         public async Task<List<User>> SearchByName(string FullName)
         => await _repo.SearchByName(FullName);
 
-        public async Task<User> Update(User user)
+        public async Task<User> Update(UpdateUser user)
         => await _repo.Update(user);
     }
 }

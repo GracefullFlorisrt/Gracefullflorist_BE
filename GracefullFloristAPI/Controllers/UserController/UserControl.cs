@@ -12,7 +12,6 @@ namespace GracefullFloristAPI.Controllers.UserController
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class UserControl : ControllerBase
     {
         private readonly IUserService _service;
@@ -21,10 +20,9 @@ namespace GracefullFloristAPI.Controllers.UserController
             _service = service;
         }
 
-        [Authorize(Roles = "1")]
-        [Route("ID")]
+        [Route("{ID}")]
         [HttpPost]
-        public async Task<IActionResult> GetUserById(string ID)
+        public async Task<IActionResult> GetUserById([FromRoute] string ID)
         { 
             ResponseType<BusinessObj.Models.User> response = new ResponseType<BusinessObj.Models.User>();
             try
@@ -39,7 +37,6 @@ namespace GracefullFloristAPI.Controllers.UserController
             }
         }
 
-        [Authorize(Roles = "1")]
         [Route("All")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -57,10 +54,9 @@ namespace GracefullFloristAPI.Controllers.UserController
             }
         }
         
-        [Authorize(Roles = "1")]
-        [Route("Name")]
+        [Route("{Name}")]
         [HttpPost]
-        public async Task<IActionResult> SearchByName(string Name)
+        public async Task<IActionResult> SearchByName([FromRoute] string Name)
         {
             ResponseType<BusinessObj.Models.User> response = new ResponseType<BusinessObj.Models.User>();
             try
@@ -75,10 +71,9 @@ namespace GracefullFloristAPI.Controllers.UserController
             }
         }
 
-        [Authorize(Roles = "1")]
         [Route("Update")]
         [HttpPut]
-        public async Task<IActionResult> Update(User request)
+        public async Task<IActionResult> Update([FromBody] UpdateUser request)
         {
             ResponseType<BusinessObj.Models.User> response = new ResponseType<BusinessObj.Models.User>();
             try
@@ -93,10 +88,9 @@ namespace GracefullFloristAPI.Controllers.UserController
             }
         }
 
-        [Authorize(Roles = "1")]
-        [Route("Delete")]
+        [Route("Delete/{request}")]
         [HttpDelete]
-        public async Task<IActionResult> Remove(string request)
+        public async Task<IActionResult> Remove([FromRoute] string request)
         {
             ResponseType<BusinessObj.Models.User> response = new ResponseType<BusinessObj.Models.User>();
             try
@@ -110,7 +104,7 @@ namespace GracefullFloristAPI.Controllers.UserController
                 return BadRequest(ex.Message);
             }
         }
-        [AllowAnonymous]
+
         [Route("Regis")]
         [HttpPost]
         public async Task<IActionResult> Registration(RegisterDTO request)
@@ -128,7 +122,6 @@ namespace GracefullFloristAPI.Controllers.UserController
             }
         }
 
-        [Authorize(Roles = "1")]
         [Route("Login")]
         [HttpPost]
         public async Task<IActionResult> Login(LoginDTO request)
@@ -146,12 +139,11 @@ namespace GracefullFloristAPI.Controllers.UserController
             }
         }
 
-        [Authorize(Roles = "1")]
         [Route("Create")]
         [HttpPost]
         public async Task<IActionResult> CreateUser(CreateUser request)
         {
-            ResponseType<BusinessObj.Models.User> response = new ResponseType<BusinessObj.Models.User>();
+            ResponseType<User> response = new ResponseType<User>();
             try
             {
                 response.Data = await this._service.CreateUser(request);
@@ -164,7 +156,6 @@ namespace GracefullFloristAPI.Controllers.UserController
             }
         }
 
-        [Authorize(Roles = "1")]
         [Route("CountCustomer")]
         [HttpGet]
         public async Task<IActionResult> countCustomers()
