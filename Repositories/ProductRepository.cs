@@ -20,23 +20,34 @@ namespace Repositories
         }
 
         public async Task<List<Product>> GetAll()
-            => await _context.Products.Where(x => (x.CustomBy != null && x.DeleteAt == null)).ToListAsync();
-                                        /*.Include(z => z.RefProductAttributes)
+            => await _context.Products.Where(x => (x.CustomBy != null && x.DeleteAt == null))
+                                        .Include(z => z.RefProductAttributes)
                                             .ThenInclude(y => y.Attribute)
-                                                .ToListAsync();*/
+                                        .Include(q => q.RefProductImgs)
+                                            .ThenInclude(a => a.En)
+                                        .ToListAsync();
+
 
 
         public async Task<Product> GetById(string id)
             => await _context.Products.Where(x => x.DeleteAt == null)
                                         .Include(z => z.RefProductAttributes)
                                             .ThenInclude(y => y.Attribute)
-                                                .FirstOrDefaultAsync();
+                                        .Include(q => q.RefProductImgs)
+                                            .ThenInclude(a => a.En)
+                                        .Include(f => f.RefFeedbacks)
+                                            .ThenInclude(s => s.Feedback)
+                                        .FirstOrDefaultAsync();
 
         public async Task<List<Product>> GetCustomize(string UserID) 
             => await this._context.Products.Where(x => x.CustomBy.Equals(UserID))
                                            .Include(z => z.RefProductAttributes)
                                             .ThenInclude(y => y.Attribute)
-                                                .ToListAsync();
+                                           .Include(q => q.RefProductImgs)
+                                            .ThenInclude(a => a.En)
+                                           .Include(f => f.RefFeedbacks)
+                                            .ThenInclude(s => s.Feedback)
+                                           .ToListAsync();
         public async Task<string> Create(CreateProductDTO product)
         {
             try
