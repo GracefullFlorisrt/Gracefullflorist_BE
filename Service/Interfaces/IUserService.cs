@@ -13,7 +13,7 @@ namespace Service.Interfaces
         public Task<List<User>> GetAll();
         public Task<User> GetUserInformation(string user);
         public Task<List<User>> SearchByName(string FullName);
-        public Task<User> Update(User user);
+        public Task<User> Update(UpdateUser user);
         public Task<bool> Remove(string userID);
         public Task<User> Registration(RegisterDTO request);
         public Task<string> Login(LoginDTO request);

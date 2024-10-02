@@ -67,7 +67,7 @@ public partial class Order
     [StringLength(20)]
     public string DeleteBy { get; set; }
 
-    public bool? Status { get; set; }
+    public int? Status { get; set; }
 
     [ForeignKey("LocationId")]
     [InverseProperty("Orders")]

@@ -33,7 +33,7 @@ builder.Services.AddAuthentication(option =>
 
 // Add services to the container.
 builder.Services.AddDbContext<GRACEFULLFLORISTContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("server")));
 
 builder.Services.AddDbContext<GRACEFULLFLORISTContext>(options => options.UseQueryTrackingBehavior(Microsoft.EntityFrameworkCore.QueryTrackingBehavior.NoTracking));
 builder.Services.AddControllers().AddJsonOptions(
@@ -47,35 +47,37 @@ builder.Services.AddSwaggerGen();
 
 
 //Add Scope here
-builder.Services.AddScoped<UserRepository>();
-builder.Services.AddScoped<AttributeRepository>();
-
-builder.Services.AddScoped<FeedbackRepository>();
-builder.Services.AddScoped<FeedbackService>();
-
-builder.Services.AddScoped<OrderRepository>();
-builder.Services.AddScoped<OrderService>();
-
-builder.Services.AddScoped<OrderDetailRepository>();
-builder.Services.AddScoped<OrderDetailService>();
-
-builder.Services.AddScoped<ProductRepository>();
-builder.Services.AddScoped<ProductService>();
-
-builder.Services.AddScoped<PromotionRepository>();
-builder.Services.AddScoped<PromotionService>();
-
-builder.Services.AddScoped<ShippingPriceRepository>();
-builder.Services.AddScoped<ShippingPriceService>();
-
-builder.Services.AddScoped<TransactionRepository>();
-builder.Services.AddScoped<TransactionService>();
-
 builder.Services.AddScoped(typeof(GRACEFULLFLORISTContext));
-builder.Services.AddScoped<ShippingPriceRepository>();
-builder.Services.AddScoped<ShippingPriceService>();
+//User
+builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<AttributeService>();
+//Feedback
+builder.Services.AddScoped<FeedbackRepository>();
+builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+//Order
+builder.Services.AddScoped<OrderRepository>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+//ODetail
+builder.Services.AddScoped<OrderDetailRepository>();
+builder.Services.AddScoped<IOrderDetailService, OrderDetailService>();
+//Product
+builder.Services.AddScoped<ProductRepository>();
+builder.Services.AddScoped<IProductService, ProductService>();
+//Promotion
+builder.Services.AddScoped<PromotionRepository>();
+builder.Services.AddScoped<IPromotionService, PromotionService>();
+//Transaction
+builder.Services.AddScoped<TransactionRepository>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
+//Shipping
+builder.Services.AddScoped<ShippingPriceRepository>();
+builder.Services.AddScoped<IShippingPriceService, ShippingPriceService>();
+//Attribute
+builder.Services.AddScoped<AttributeRepository>();
+builder.Services.AddScoped<IAttributeService, AttributeService>();
+
+
+
 builder.Services.AddSwaggerGen(option =>
 {
     /*

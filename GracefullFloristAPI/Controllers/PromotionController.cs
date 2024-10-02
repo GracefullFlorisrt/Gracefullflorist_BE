@@ -7,16 +7,16 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace YourNamespace.Controllers
+namespace GracefullFloristAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
     public class PromotionController : ControllerBase
     {
-        private readonly PromotionService _service;
+        private readonly IPromotionService _service;
 
-        public PromotionController(PromotionService service)
+        public PromotionController(IPromotionService service)
         {
             _service = service;
         }

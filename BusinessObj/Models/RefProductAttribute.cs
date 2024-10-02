@@ -24,6 +24,8 @@ public partial class RefProductAttribute
 
     public bool? Status { get; set; }
 
+    public int QuantityIn { get; set; }
+
     [ForeignKey("AttributeId")]
     [InverseProperty("RefProductAttributes")]
     public virtual Attribute Attribute { get; set; }

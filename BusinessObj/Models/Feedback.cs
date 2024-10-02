@@ -28,5 +28,8 @@ public partial class Feedback
     public bool? Status { get; set; }
 
     [InverseProperty("Feedback")]
+    public virtual ICollection<RefBogsFeedback> RefBogsFeedbacks { get; set; } = new List<RefBogsFeedback>();
+
+    [InverseProperty("Feedback")]
     public virtual ICollection<RefFeedback> RefFeedbacks { get; set; } = new List<RefFeedback>();
 }

@@ -7,16 +7,16 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace YourNamespace.Controllers
+namespace GracefullFloristAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
     public class OrderDetailController : ControllerBase
     {
-        private readonly OrderDetailService _service;
+        private readonly IOrderDetailService _service;
 
-        public OrderDetailController(OrderDetailService service)
+        public OrderDetailController(IOrderDetailService service)
         {
             _service = service;
         }

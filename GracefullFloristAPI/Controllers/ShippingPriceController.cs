@@ -7,16 +7,16 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace YourNamespace.Controllers
+namespace GracefullFloristAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
     public class ShippingPriceController : ControllerBase
     {
-        private readonly ShippingPriceService _service;
+        private readonly IShippingPriceService _service;
 
-        public ShippingPriceController(ShippingPriceService service)
+        public ShippingPriceController(IShippingPriceService service)
         {
             _service = service;
         }

@@ -7,21 +7,20 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace YourNamespace.Controllers
+namespace GracefullFloristAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    
     public class TransactionController : ControllerBase
     {
-        private readonly TransactionService _service;
+        private readonly ITransactionService _service;
 
-        public TransactionController(TransactionService service)
+        public TransactionController(ITransactionService service)
         {
             _service = service;
         }
 
-        [Authorize(Roles = "1")]
         [Route("All")]
         [HttpGet]
         public async Task<IActionResult> GetAllTransaction()
@@ -37,8 +36,6 @@ namespace YourNamespace.Controllers
             }
         }
 
-
-        [Authorize(Roles = "1")]
         [Route("ID")]
         [HttpGet]
         public async Task<IActionResult> GetTransactionById(string Transactionid)
@@ -51,8 +48,6 @@ namespace YourNamespace.Controllers
             return Ok(Transaction);
         }
 
-
-        [Authorize(Roles = "2,3")]
         [Route("Add")]
         [HttpPost]
         public async Task<IActionResult> AddTransaction([FromBody] Transaction Transaction)
@@ -73,7 +68,6 @@ namespace YourNamespace.Controllers
             }
         }
 
-        [Authorize(Roles = "2,3")]
         [Route("Update")]
         [HttpPut]
         public async Task<IActionResult> UpdateTransaction(string Transactionid, [FromBody] Transaction Transaction)
@@ -94,7 +88,6 @@ namespace YourNamespace.Controllers
             }
         }
 
-        [Authorize(Roles = "2,3")]
         [Route("Delete")]
         [HttpDelete]
         public async Task<IActionResult> DeleteTransaction(string Transactionid)

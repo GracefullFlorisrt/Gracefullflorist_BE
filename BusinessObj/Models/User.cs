@@ -21,7 +21,6 @@ public partial class User
     public string Username { get; set; }
 
     [Required]
-    [StringLength(50)]
     public string Passwork { get; set; }
 
     [StringLength(50)]
@@ -51,6 +50,9 @@ public partial class User
 
     [InverseProperty("User")]
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
+    [InverseProperty("User")]
+    public virtual ICollection<RefBogsFeedback> RefBogsFeedbacks { get; set; } = new List<RefBogsFeedback>();
 
     [InverseProperty("User")]
     public virtual ICollection<RefFeedback> RefFeedbacks { get; set; } = new List<RefFeedback>();
