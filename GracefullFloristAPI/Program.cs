@@ -120,7 +120,7 @@ builder.Services.AddSwaggerGen(option =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-/*
+
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
@@ -128,8 +128,6 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 }
 
 // Configure the HTTP request pipeline.
-
-*/
 
 if (app.Environment.IsDevelopment())
 {
