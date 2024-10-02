@@ -120,13 +120,14 @@ builder.Services.AddSwaggerGen(option =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-/*
+
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/GRACEFULLFLORIST/swagger.json", "GracefullFloristAPI v1"));
+    app.UseSwaggerUI();
+    //c => c.SwaggerEndpoint("/swagger/GRACEFULL_FLORIST/swagger.json", "GracefullFloristAPI v1")
 }
-*/
+
 // Configure the HTTP request pipeline.
 
 if (app.Environment.IsDevelopment())
